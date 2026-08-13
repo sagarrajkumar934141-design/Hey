@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Surprise 🎂</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* PASSWORD SCREEN */
+#passwordScreen {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #141e30, #243b55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.password-box {
+    width: 90%;
+    max-width: 380px;
+    padding: 35px 25px;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+
+.lock {
+    font-size: 65px;
+    margin-bottom: 15px;
+}
+
+.password-box h1 {
+    margin-bottom: 10px;
+}
+
+.password-box p {
+    opacity: .8;
+    margin-bottom: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    outline: none;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: #ff4081;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #f50057;
+}
+
+#error {
+    color: #ffb3c1;
+    margin-top: 12px;
+    display: none;
+}
+
+/* BIRTHDAY PAGE */
+#birthdayPage {
+    display: none;
+    height: 100vh;
+    text-align: center;
+    color: white;
+    padding: 40px 20px;
+}
+
+.content {
+    position: relative;
+    z-index: 5;
+    top: 8%;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+h1 {
+    font-size: clamp(45px, 10vw, 90px);
+    margin: 15px 0;
+    text-shadow: 0 5px 15px rgba(0,0,0,.3);
+}
+
+.message {
+    max-width: 650px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.6;
+}
+
+.cake {
+    font-size: 110px;
+    margin: 20px;
+    animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+/* BALLOONS */
+.balloon {
+    position: absolute;
+    width: 55px;
+    height: 70px;
+    border-radius: 50%;
+    animation: float 6s infinite ease-in-out;
+}
+
+.balloon::after {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 100px;
+    background: white;
+    left: 50%;
+    top: 68px;
+}
+
+.b1 {
+    left: 8%;
+    top: 20%;
+    background: #ff1744;
+}
+
+.b2 {
+    right: 10%;
+    top: 15%;
+    background: #00e5ff;
+    animation-delay: 1s;
+}
+
+.b3 {
+    left: 18%;
+    bottom: 10%;
+    background: #ffea00;
+    animation-delay: 2s;
+}
+
+.b4 {
+    right: 20%;
+    bottom: 12%;
+    background: #76ff03;
+    animation-delay: 3s;
+}
+
+@keyframes float {
+    50% {
+        transform: translateY(-35px) rotate(5deg);
+    }
+}
+
+/* CONFETTI */
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 18px;
+    top: -30px;
+    animation: fall 5s linear infinite;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(110vh) rotate(720deg);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- PASSWORD -->
+<div id="passwordScreen">
+
+    <div class="password-box">
+
+        <div class="lock">🔐</div>
+
+        <h1 style="font-size:32px;">Birthday Surprise</h1>
+
+        <p>Enter the secret password 🎁</p>
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Enter Password"
+            onkeydown="checkEnter(event)"
+        >
+
+        <button onclick="unlock()">Open Surprise 🎂</button>
+
+        <div id="error">
+            Wrong password! Try again ❤️
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- BIRTHDAY PAGE -->
+<div id="birthdayPage">
+
+    <div class="balloon b1"></div>
+    <div class="balloon b2"></div>
+    <div class="balloon b3"></div>
+    <div class="balloon b4"></div>
+
+    <div class="content">
+
+        <h2>🎉 A Special Day 🎉</h2>
+
+        <h1>Happy Birthday My LOVE! 🎂</h1>
+
+        <div class="cake">🎂</div>
+
+        <p class="message">
+            Wishing you a very Happy Birthday! ❤️<br>
+            May your day be filled with happiness,
+            love, laughter and beautiful memories. ✨
+        </p>
+
+        <br>
+
+        <button onclick="celebrate()">
+            🎉 Celebrate 🎉
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const correctPassword = "1011";
+
+function unlock() {
+
+    let password = document.getElementById("password").value;
+    let error = document.getElementById("error");
+
+    if (password === correctPassword) {
+
+        document.getElementById("passwordScreen").style.display = "none";
+        document.getElementById("birthdayPage").style.display = "block";
+
+        createConfetti();
+
+    } else {
+
+        error.style.display = "block";
+
+        document.getElementById("password").value = "";
+
+    }
+}
+
+function checkEnter(event) {
+
+    if (event.key === "Enter") {
+        unlock();
+    }
+
+}
+
+function createConfetti() {
+
+    for (let i = 0; i < 100; i++) {
+
+        let confetti = document.createElement("div");
+
+        confetti.className = "confetti";
+
+        confetti.style.left = Math.random() * 100 + "vw";
+
+        confetti.style.animationDelay =
+            Math.random() * 5 + "s";
+
+        confetti.style.background =
+            "hsl(" + Math.random() * 360 + ", 100%, 60%)";
+
+        confetti.style.transform =
+            "rotate(" + Math.random() * 360 + "deg)";
+
+        document.body.appendChild(confetti);
+    }
+}
+
+function celebrate() {
+
+    createConfetti();
+
+    alert("🎉 Happy Birthday Niyati ! ❤️🎂");
+
+}
+
+</script>
+
+</body>
+</html>
